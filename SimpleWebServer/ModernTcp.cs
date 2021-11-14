@@ -46,10 +46,21 @@ namespace SimpleWebServer
                             }
                             var incomingMessage = Encoding.ASCII.GetString(buffer, 0, read);
                             Console.WriteLine(incomingMessage);
-                            var responseMessage = GetResponseMessage("My responses are limited.");
-                            //var outgoingMessage = Encoding.ASCII.GetBytes("My responses are limited.");
-                            // await connection.SendAsync(buffer[..read], SocketFlags.None);
-                            await connection.SendAsync(responseMessage, SocketFlags.None);
+                            if (incomingMessage.Contains("/favicon.ico"))
+                            {
+                                var responseMessage = GetNotFoundResponseMessage();
+                                //var outgoingMessage = Encoding.ASCII.GetBytes("My responses are limited.");
+                                // await connection.SendAsync(buffer[..read], SocketFlags.None);
+                                await connection.SendAsync(responseMessage, SocketFlags.None);
+                            }
+                            else
+                            {
+                                var responseMessage = GetResponseMessage("My responses are limited.");
+                                //var outgoingMessage = Encoding.ASCII.GetBytes("My responses are limited.");
+                                // await connection.SendAsync(buffer[..read], SocketFlags.None);
+                                await connection.SendAsync(responseMessage, SocketFlags.None);
+                            }
+
                         }
                     }
                     finally
@@ -66,6 +77,18 @@ namespace SimpleWebServer
                                 + "Content-Length: " + message.Length + Environment.NewLine
                                 + "Content-Type: " + "text/plain" + Environment.NewLine
                                 + Environment.NewLine
+                                + message
+                                + Environment.NewLine + Environment.NewLine;
+            return Encoding.ASCII.GetBytes(result);
+        }
+
+        public byte[] GetNotFoundResponseMessage()
+        {
+            string message = "Sorry, couldn't find that document";
+            var result = "HTTP/1.1 404 Not Found" + Environment.NewLine 
+                                + "Content-Length: " + message.Length + Environment.NewLine
+                                + "Content-Type: " + "text/plain" + Environment.NewLine
+                                + Environment.NewLine 
                                 + message
                                 + Environment.NewLine + Environment.NewLine;
             return Encoding.ASCII.GetBytes(result);

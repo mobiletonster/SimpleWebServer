@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWebServer;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,7 +10,9 @@ public static class Program
     public static async Task Main(string[] args)
     {
         Console.WriteLine("Begin server");
-        var server = new HttpServer(8000);
+        //var server = new HttpServer(8000);
+        //var server = new SimpleListener(8000);
+        var server = new ModernTcp(8000);
         await server.StartAsync();
         Console.WriteLine("End server");
     }
@@ -42,7 +45,7 @@ public class HttpServer
                 Console.WriteLine($"Connection request #{request}.");
                 using (var stream = client.GetStream())
                 {
-                    var buffer = new byte[10240];
+                    var buffer = new byte[256];
                     var length = await stream.ReadAsync(buffer, 0, buffer.Length);
                     var incomingMessage = Encoding.UTF8.GetString(buffer, 0, length);
                     if (incomingMessage.Contains("/favicon.ico"))
@@ -51,6 +54,17 @@ public class HttpServer
                         try
                         {
                             await stream.WriteAsync(notFoundResult, 0, notFoundResult.Length);
+
+                            var data = new Byte[256];
+
+                            // String to store the response ASCII representation.
+                            String responseData = String.Empty;
+
+                            // Read the first batch of the TcpServer response bytes.
+                            Int32 bytes = stream.Read(data, 0, data.Length);
+                            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                            Console.WriteLine("Received: {0}", responseData);
+
                             stream.Close();
                             client.Close();
 
@@ -77,6 +91,17 @@ public class HttpServer
                         try
                         {
                             await stream.WriteAsync(byteResult, 0, byteResult.Length);
+
+                            var data = new Byte[256];
+
+                            // String to store the response ASCII representation.
+                            String responseData = String.Empty;
+
+                            // Read the first batch of the TcpServer response bytes.
+                            Int32 bytes = stream.Read(data, 0, data.Length);
+                            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                            Console.WriteLine("Received: {0}", responseData);
+
                             stream.Close();
                             client.Close();
                         }

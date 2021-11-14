@@ -9,11 +9,15 @@ while (!done)
 {
     try
     {
-        var client = new TcpClient("localhost", 100);
+        var client = new TcpClient("localhost", 8000);
 
         NetworkStream ns = client.GetStream();
 
-        byte[] bytes = new byte[1024];
+        byte[] byteMessage = Encoding.ASCII.GetBytes("Hey Siru");
+
+            ns.Write(byteMessage, 0, byteMessage.Length);
+
+            byte[] bytes = new byte[1024];
         int bytesRead = ns.Read(bytes, 0, bytes.Length);
 
         Console.WriteLine(Encoding.ASCII.GetString(bytes, 0, bytesRead));

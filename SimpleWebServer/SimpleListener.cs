@@ -19,7 +19,7 @@ public class SimpleListener
         TcpListener server = null;
         try
         {
-            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+            IPAddress localAddr = IPAddress.Any;
 
             // TcpListener server = new TcpListener(port);
             server = new TcpListener(localAddr, _port);
@@ -28,7 +28,7 @@ public class SimpleListener
             server.Start();
 
             // Buffer for reading data
-            Byte[] bytes = new Byte[256];
+            Byte[] bytes = new Byte[1024];
             String data = null;
 
             // Enter the listening loop.

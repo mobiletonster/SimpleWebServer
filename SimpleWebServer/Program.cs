@@ -11,8 +11,8 @@ public static class Program
     {
         Console.WriteLine("Begin server");
         //var server = new HttpServer(8000);
-        //var server = new SimpleListener(8000);
-        var server = new ModernTcp(8000);
+        var server = new SimpleListener(8800);
+        // var server = new ModernTcp(8800);
         await server.StartAsync();
         Console.WriteLine("End server");
     }
@@ -27,7 +27,7 @@ public class HttpServer
     public HttpServer(int port)
     {
         _port = port;
-        _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), _port);
+        _listener = new TcpListener(IPAddress.Any, _port);
     }
 
     public async Task StartAsync()

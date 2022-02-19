@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWebServer
 {
-    // Code based on David Fowler's DotNetCodingPatterns for (modren) Asynchronous Socket Server
+    // Code based on David Fowler's DotNetCodingPatterns for (modern) Asynchronous Socket Server
     // https://github.com/davidfowl/DotNetCodingPatterns/blob/main/2.md
     public class ModernTcp
     {
@@ -45,6 +45,9 @@ namespace SimpleWebServer
                                 break;
                             }
                             var incomingMessage = Encoding.ASCII.GetString(buffer, 0, read);
+                            var response = incomingMessage.Split("\r\n");
+                            var firstLine = response.First().Split(' ');
+                            
                             Console.WriteLine(incomingMessage);
                             if (incomingMessage.Contains("/favicon.ico"))
                             {

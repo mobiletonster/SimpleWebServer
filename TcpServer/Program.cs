@@ -14,16 +14,26 @@ int x = 0;
 while (!done)
 {
     Console.Write("Waiting for connection...");
-    TcpClient client = listener.AcceptTcpClient();
+    TcpClient client = await listener.AcceptTcpClientAsync();
+    // TcpClient client = listener.AcceptTcpClient();
 
     Console.WriteLine($"Connection accepted. {x}");
+    
     NetworkStream ns = client.GetStream();
+
+    byte[] bytes = new byte[1024];
+    int bytesRead = await ns.ReadAsync(bytes, 0, bytes.Length);
+
+    Console.WriteLine(Encoding.ASCII.GetString(bytes, 0, bytesRead));
+
 
     byte[] byteTime = Encoding.ASCII.GetBytes(DateTime.Now.ToString() + $" {x}");
 
     try
     {
-        ns.Write(byteTime, 0, byteTime.Length);
+        await ns.WriteAsync(byteTime,0, byteTime.Length);
+        //ns.Write(byteTime, 0, byteTime.Length);
+        
         ns.Close();
         client.Close();
     }
